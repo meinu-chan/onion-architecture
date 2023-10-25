@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@tsconfig/node20/tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "alwaysStrict": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "incremental": true,
+    "noImplicitAny": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "importsNotUsedAsValues": "error",
+    "ignoreDeprecations": "5.0",
+    "strictPropertyInitialization": false
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

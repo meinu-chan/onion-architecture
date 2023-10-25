@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/eslint",
+    // Override to allow ESLint to check .js files.
+    "allowJs": true,
+    "checkJs": true
+  },
+  "include": ["*.js", "src/**/*"]
+}
