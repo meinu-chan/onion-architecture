@@ -1,5 +1,7 @@
 import type {
+  DependencyConstructor,
   DependencyDeclaration,
+  DependencyDeclarationCommonOptions,
   DependencyToken,
   DerivedDependencyToken
 } from './_types.js'
@@ -41,3 +43,14 @@ export class DependencyRegistry extends Map<
 }
 
 export const dependencyRegistry = new DependencyRegistry()
+
+export function registerDependency(
+  declarationOptions: DependencyDeclarationCommonOptions
+) {
+  return (target: DependencyConstructor<unknown>) => {
+    dependencyRegistry.set(target, {
+      useClass: target,
+      ...declarationOptions
+    })
+  }
+}

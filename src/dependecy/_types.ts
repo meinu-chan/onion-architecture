@@ -1,10 +1,10 @@
 import type { DependencyContainer } from './DependencyContainer.js'
 
-type DependencyConstructor<TDependency> =
+export type DependencyConstructor<TDependency> =
   | (new (dc: DependencyContainer) => TDependency)
   | (new () => TDependency)
 
-interface DependencyDeclarationCommonOptions {
+export interface DependencyDeclarationCommonOptions {
   disposable?: boolean
   singleton?: boolean
 }
