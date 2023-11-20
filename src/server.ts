@@ -1,8 +1,11 @@
-import fastify from 'fastify'
+import fastify, { FastifyInstance } from 'fastify'
+import { dependencyContainerPlugin } from './plugin/dependencyContainerPlugin.js'
 
 const server = fastify()
 
-server.get('/ping', async (_request, _reply) => {
+void server.register(dependencyContainerPlugin)
+
+server.get('/ping', function (this: FastifyInstance, _request, _reply) {
   return 'pong\n'
 })
 
