@@ -5,18 +5,23 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint --ext .ts src"
+    "build:clean": "rm *.tsbuildinfo && rm -rf dist/* && tsc",
+    "lint": "eslint --ext .ts src",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node20": "^20.1.2",
-    "@types/node": "^20.8.8",
+    "@types/node": "^20.9.2",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "eslint": "^8.52.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "fastify": "^4.24.3"
   }
 }

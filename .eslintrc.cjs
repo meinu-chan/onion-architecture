@@ -39,7 +39,6 @@ module.exports = {
       'error',
       { args: 'all', argsIgnorePattern: '^_' }
     ],
-    'import/order': ['error', { alphabetize: { order: 'asc' } }],
     'no-empty-function': ['error', { allow: ['constructors'] }],
     'no-restricted-syntax': [
       'error',
