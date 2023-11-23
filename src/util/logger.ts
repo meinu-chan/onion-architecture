@@ -1,5 +1,7 @@
-import { createLogger, transports } from 'winston'
-import { dependencyRegistry } from '../dependecy/DependencyRegistry.js'
+import { dependencyRegistry } from '../dependency/DependencyRegistry.js'
+import { createLogger, type Logger as WinstonLogger, transports } from 'winston'
+
+export type Logger = WinstonLogger
 
 export const LOGGER = Symbol('Winston-Logger')
 

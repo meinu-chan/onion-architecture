@@ -4,5 +4,5 @@ services:
     ports:
       - 5432:5432
     environment:
-      POSTGRES_PASSWORD: 'local'
+      POSTGRES_PASSWORD: 'postgres'
       POSTGRES_USER: 'local'

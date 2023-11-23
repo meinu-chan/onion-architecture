@@ -7,7 +7,8 @@
     "build": "tsc",
     "build:clean": "rm *.tsbuildinfo && rm -rf dist/* && tsc",
     "lint": "eslint --ext .ts src",
-    "start": "node dist/server.js"
+    "start": "node bin/apiServer",
+    "migrate:up": "node bin/runUpMigrations"
   },
   "keywords": [],
   "author": "",
@@ -23,9 +24,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "fastify-plugin": "^4.5.1",
     "pg": "^8.11.3",
+    "postgrator": "^7.2.0",
     "tslib": "^2.6.2",
     "winston": "^3.11.0"
   }

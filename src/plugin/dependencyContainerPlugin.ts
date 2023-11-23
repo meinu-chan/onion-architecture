@@ -1,6 +1,6 @@
 import fastifyPlugin from 'fastify-plugin'
 import type { FastifyInstance } from 'fastify'
-import { processDependencyContainer } from '../dependecy/ProcessDependencyContainer.js'
+import { processDependencyContainer } from '../dependency/ProcessDependencyContainer.js'
 
 export const dependencyContainerPlugin = fastifyPlugin(
   (fastify: FastifyInstance) => {

@@ -1,10 +1,10 @@
 import pg from 'pg'
-import { config } from '../config.js'
-import type { DependencyContainer } from '../dependecy/DependencyContainer.js'
-import type { Disposable } from '../dependecy/_types.js'
+import { config } from '../config/config.js'
+import type { DependencyContainer } from '../dependency/DependencyContainer.js'
+import type { Disposable } from '../dependency/_types.js'
 import type { Logger } from 'winston'
 import { LOGGER } from '../util/logger.js'
-import { registerDependency } from '../dependecy/DependencyRegistry.js'
+import { registerDependency } from '../dependency/DependencyRegistry.js'
 
 @registerDependency({
   singleton: true,

@@ -1,4 +1,4 @@
-import type { DependencyContainer } from '../dependecy/DependencyContainer.ts'
+import type { DependencyContainer } from '../dependency/DependencyContainer.ts'
 import 'fastify'
 
 declare module 'fastify' {
