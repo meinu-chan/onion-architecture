@@ -1,1 +1,1 @@
-./dist/bin/apiServer.js
+../dist/bin/apiServer.js

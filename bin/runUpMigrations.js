@@ -1,1 +1,1 @@
-./dist/bin/runUpMigrations.js
+../dist/bin/runUpMigrations.js
