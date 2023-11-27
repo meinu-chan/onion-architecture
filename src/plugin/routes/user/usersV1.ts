@@ -1,22 +1,22 @@
 import { ApiError } from '../../../util/error/ApiError.js'
-import type {
-  FastifyInstance,
-  FastifyPluginCallback,
-  FastifyPluginOptions,
-  FastifyReply,
-  FastifyRequest
-} from 'fastify'
-import {
-  LoadedUserEntity,
-  UserRepository
-} from '../../../database/repository/UserRepository.js'
+import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
+import { LoadedUserEntity, UserRepository } from '../../../database/repository/UserRepository.js'
+import { Static, Type } from '@sinclair/typebox'
 import { statusCode } from '../../util/statusCode.js'
 
-interface CreateUserBody {
-  name: string
-  email: string
-  password: string
-}
+const createUserRequestSchema = Type.Object({
+  email: Type.String({ format: 'email' }),
+  name: Type.String(),
+  password: Type.String()
+})
+
+const createUserResponseSchema = Type.Object({
+  id: Type.Number(),
+  email: Type.String(),
+  name: Type.String(),
+  created_at: Type.String(),
+  updated_at: Type.String()
+})
 
 export const usersV1: FastifyPluginCallback = (
   fastify: FastifyInstance,
@@ -25,8 +25,16 @@ export const usersV1: FastifyPluginCallback = (
 ): void => {
   fastify.post(
     '/users',
+    {
+      schema: {
+        body: createUserRequestSchema,
+        response: {
+          201: createUserResponseSchema
+        }
+      }
+    },
     async (
-      request: FastifyRequest<{ Body: CreateUserBody }>,
+      request: FastifyRequest<{ Body: Static<typeof createUserRequestSchema> }>,
       reply: FastifyReply
     ): Promise<LoadedUserEntity> => {
       const userRepository = fastify.dc.resolve(UserRepository)
