@@ -4,9 +4,9 @@ import type { DependencyContainer } from '../dependency/DependencyContainer.js'
 import type { Disposable } from '../dependency/_types.js'
 import type { Logger } from 'winston'
 import { LOGGER } from '../util/logger.js'
-import { registerDependency } from '../dependency/DependencyRegistry.js'
+import { registerProcessDependency } from '../dependency/ProcessDependencyContainer.js'
 
-@registerDependency({
+@registerProcessDependency({
   singleton: true,
   disposable: true
 })

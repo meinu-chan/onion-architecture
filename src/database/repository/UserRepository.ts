@@ -1,7 +1,7 @@
 import type { DependencyContainer } from '../../dependency/DependencyContainer.js'
 import { PostgresPool } from '../PostgresPool.js'
 import type { ReadableRepository, WritableRepository } from '../Repository.js'
-import { registerDependency } from '../../dependency/DependencyRegistry.js'
+import { registerProcessDependency } from '../../dependency/ProcessDependencyContainer.js'
 
 export interface UserEntityIdentifier {
   email: string
@@ -19,7 +19,7 @@ export interface LoadedUserEntity extends UserEntity {
   updated_at: Date
 }
 
-@registerDependency({ singleton: true })
+@registerProcessDependency({ singleton: true })
 export class UserRepository
   implements
     WritableRepository<UserEntity, LoadedUserEntity>,

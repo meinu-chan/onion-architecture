@@ -9,6 +9,8 @@ export interface DependencyDeclarationCommonOptions {
   singleton?: boolean
 }
 
+export type DependencyScope = 'process' | 'controller'
+
 interface FactoryDependencyDeclaration<TDeclaration>
   extends DependencyDeclarationCommonOptions {
   useFactory: (dc: DependencyContainer) => TDeclaration
@@ -17,6 +19,7 @@ interface FactoryDependencyDeclaration<TDeclaration>
 interface SimpleClassDependencyDeclaration<TInstance>
   extends DependencyDeclarationCommonOptions {
   useClass: DependencyConstructor<TInstance>
+  scope: DependencyScope
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
