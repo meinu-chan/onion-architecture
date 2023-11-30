@@ -1,8 +1,9 @@
 import { ApiError } from '../../../util/error/ApiError.js'
 import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
-import { LoadedUserEntity, UserRepository } from '../../../database/repository/UserRepository.js'
+import { RepositoryService } from '../../../database/RepositoryService.js'
 import { Static, Type } from '@sinclair/typebox'
 import { statusCode } from '../../util/statusCode.js'
+import type { LoadedUserEntity } from '../../../database/abstract/AbstractUserRepository.js'
 
 const createUserRequestSchema = Type.Object({
   email: Type.String({ format: 'email' }),
@@ -23,6 +24,8 @@ export const usersV1: FastifyPluginCallback = (
   _opts: FastifyPluginOptions,
   done: (err?: Error) => void
 ): void => {
+  const repositoryService = fastify.dc.resolve(RepositoryService)
+
   fastify.post(
     '/users',
     {
@@ -37,16 +40,16 @@ export const usersV1: FastifyPluginCallback = (
       request: FastifyRequest<{ Body: Static<typeof createUserRequestSchema> }>,
       reply: FastifyReply
     ): Promise<LoadedUserEntity> => {
-      const userRepository = fastify.dc.resolve(UserRepository)
-
-      if (await userRepository.getEntity(request.body)) {
+      if (await repositoryService.userRepository.getEntity(request.body)) {
         throw new ApiError(
           'user with passed email already exists',
           'BAD_REQUEST'
         )
       }
 
-      const user = await userRepository.setEntity(request.body)
+      const user = await repositoryService.userRepository.setEntity(
+        request.body
+      )
 
       void reply.status(statusCode.CREATED)
 

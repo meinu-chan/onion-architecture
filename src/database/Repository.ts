@@ -1,14 +1,48 @@
-export interface WritableRepository<
+interface CommonRepositoryEntity {
+  EntityIdentifier?: unknown
+  Entity?: unknown
+  LoadedEntity?: unknown
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface Repository<TEntity extends CommonRepositoryEntity = any> {
+  getEntity?: (
+    identifier: TEntity['EntityIdentifier']
+  ) => Promise<TEntity['LoadedEntity'] | undefined>
+  getEntities?: () => Promise<TEntity['LoadedEntity'][]>
+  setEntity?: (entity: TEntity['Entity']) => Promise<TEntity['LoadedEntity']>
+  removeEntity?: (identifier: TEntity['EntityIdentifier']) => Promise<void>
+  updateEntity?: (
+    identifier: TEntity['EntityIdentifier'],
+    entity: TEntity['Entity']
+  ) => Promise<TEntity['LoadedEntity']>
+}
+
+type PartialRepository<
+  TEntity extends CommonRepositoryEntity = CommonRepositoryEntity,
+  TMethods extends keyof Repository<TEntity> = keyof Repository<TEntity>
+> = Required<Pick<Repository<TEntity>, TMethods>>
+
+export type WritableRepository<
   TEntity,
   TLoadedEntity extends TEntity = TEntity
-> {
-  setEntity(entity: TEntity): Promise<TLoadedEntity>
-}
+> = PartialRepository<
+  { Entity: TEntity; LoadedEntity: TLoadedEntity },
+  'setEntity'
+>
 
-export interface ReadableRepository<TEntityIdentifier, TLoadedEntity> {
-  getEntity(identifier: TEntityIdentifier): Promise<TLoadedEntity | undefined>
-}
+export type ReadableRepository<
+  TEntityIdentifier,
+  TLoadedEntity extends TEntityIdentifier
+> = PartialRepository<
+  {
+    EntityIdentifier: TEntityIdentifier
+    LoadedEntity: TLoadedEntity
+  },
+  'getEntity'
+>
 
-export interface RemovableRepository<TEntityIdentifier> {
-  removeEntity(identifier: TEntityIdentifier): Promise<void>
-}
+export type RemovableRepository<TEntityIdentifier> = PartialRepository<
+  { EntityIdentifier: TEntityIdentifier },
+  'removeEntity'
+>

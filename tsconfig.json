@@ -11,14 +11,12 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
-    "noImplicitAny": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "importsNotUsedAsValues": "error",
     "ignoreDeprecations": "5.0",
-    "strictPropertyInitialization": false,
-    "experimentalDecorators": true
+    "strictPropertyInitialization": false
   },
   "include": ["src"],
   "exclude": ["node_modules"]
