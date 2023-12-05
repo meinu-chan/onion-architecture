@@ -1,5 +1,5 @@
-import { AbstractUserRepository, LoadedUserEntity, UserEntity, UserEntityIdentifier } from '../abstract/AbstractUserRepository.js'
-import type { DependencyContainer } from '../../dependency/DependencyContainer.js'
+import { AbstractUserRepository, LoadedUserEntity, UserEntity, UserEntityIdentifier } from '../../abstract/AbstractUserRepository.js'
+import type { DependencyContainer } from '../../../dependency/DependencyContainer.js'
 import { PostgresPool } from '../PostgresPool.js'
 
 export class UserRepository extends AbstractUserRepository {

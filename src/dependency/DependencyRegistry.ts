@@ -6,7 +6,7 @@ export class DependencyRegistry extends Map<
   DependencyDeclaration
 > {
   public get<TInstance>(
-    token: DependencyToken | DerivedDependencyToken
+    token: DependencyToken
   ): DependencyDeclaration<TInstance> {
     const derivedToken = deriveToken(token)
 

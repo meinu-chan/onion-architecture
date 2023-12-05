@@ -4,6 +4,8 @@ export type DependencyConstructor<TDependency> =
   | (new (dc: DependencyContainer) => TDependency)
   | (new () => TDependency)
 
+type AnyConstructor<TInstance> = new (...args: never[]) => TInstance
+
 export interface DependencyDeclarationCommonOptions {
   disposable?: boolean
   singleton?: boolean
@@ -26,7 +28,7 @@ export type DependencyDeclaration<TInstance = any> =
 
 export type DependencyToken<TInstance = unknown> =
   | DerivedDependencyToken
-  | DependencyConstructor<TInstance>
+  | AnyConstructor<TInstance>
 
 export type DerivedDependencyToken = string | symbol
 
