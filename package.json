@@ -8,6 +8,7 @@
     "build:clean": "rm *.tsbuildinfo && rm -rf dist/* && tsc",
     "lint": "eslint --ext .ts src",
     "start": "node bin/apiServer",
+    "start:dev": "nodemon bin/apiServer",
     "migrate:up": "node bin/runUpMigrations"
   },
   "keywords": [],
@@ -20,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "eslint": "^8.52.0",
+    "nodemon": "^3.0.2",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
