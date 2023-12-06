@@ -1,9 +1,9 @@
 import fastifyPlugin from 'fastify-plugin'
+import { container } from '../server.js'
 import type { FastifyInstance } from 'fastify'
-import { processDependencyContainer } from '../dependency/ProcessDependencyContainer.js'
 
 export const dependencyContainerPlugin = fastifyPlugin(
   (fastify: FastifyInstance) => {
-    return fastify.decorate('dc', processDependencyContainer)
+    return fastify.decorate('dc', container)
   }
 )

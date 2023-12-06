@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import 'reflect-metadata'
 import { getIntegerFromEnv } from '../config/getFromEnv.js'
 import { getServer } from '../server.js'
 
