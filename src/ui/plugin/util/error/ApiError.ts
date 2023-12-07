@@ -22,9 +22,9 @@ const coreErrorReasonToApiError: Record<
   duplicate: 'BAD_REQUEST'
 }
 
-export function coreToApiError(err: CoreError): void {
+export function coreToApiError(err: CoreError): void | never {
   if (err.metadata.unhandledError) {
-    throw err
+    return
   }
 
   throw new ApiError(

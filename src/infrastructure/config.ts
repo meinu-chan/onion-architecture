@@ -3,13 +3,13 @@ import type { PoolConfig } from 'pg'
 
 configDotenv()
 
-interface AppConfig {
+interface InfrastructureConfig {
   database: {
     postgresPool: PoolConfig
   }
 }
 
-export const config: AppConfig = {
+export const infrastructureConfig: InfrastructureConfig = {
   database: {
     postgresPool: {}
   }

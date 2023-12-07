@@ -2,12 +2,17 @@
 
 import pg from 'pg'
 import Postgrator from 'postgrator'
-import { config } from '../infrastructure/config/config.js'
+import { AppContainer } from '../dependecy/AppContainer.js'
+import { CORE_COMMON } from '../core/CoreSymbols.js'
+import { infrastructureConfig } from '../infrastructure/config.js'
+import type { Logger } from '../core/common/logger.js'
+import 'reflect-metadata'
+
 import { join } from 'node:path'
 
 async function runUpMigrations(targetMigration: string) {
-  const dbConfig = config.database.postgresPool
-  // const logger = processDependencyContainer.resolve<Logger>(LOGGER)
+  const dbConfig = infrastructureConfig.database.postgresPool
+  const logger = new AppContainer().get<Logger>(CORE_COMMON.LOGGER)
   const client = new pg.Client(dbConfig)
 
   const pathToMigrations = join(
@@ -28,15 +33,15 @@ async function runUpMigrations(targetMigration: string) {
 
   const appliedMigrations = await postgrator.migrate(targetMigration)
 
-  // for (const migration of appliedMigrations) {
-  //   logger.info(
-  //     `Migration #${migration.version} (${migration.name}) ${
-  //       migration.action === 'do' ? 'DONE' : 'UNDONE'
-  //     }.`
-  //   )
-  // }
+  for (const migration of appliedMigrations) {
+    logger.info(
+      `Migration #${migration.version} (${migration.name}) ${
+        migration.action === 'do' ? 'DONE' : 'UNDONE'
+      }.`
+    )
+  }
 
-  // logger.info(`Ran ${appliedMigrations.length} PostgreSQL migrations.`)
+  logger.info(`Ran ${appliedMigrations.length} PostgreSQL migrations.`)
 
   void client.end()
 }

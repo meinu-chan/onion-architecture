@@ -1,6 +1,6 @@
 import pg from 'pg'
-import { config } from '../config/config.js'
 import { CORE_COMMON } from '../../core/CoreSymbols.js'
+import { infrastructureConfig } from '../config.js'
 import { inject, injectable } from 'inversify'
 import type { Logger } from '../../core/common/logger.js'
 
@@ -10,7 +10,7 @@ export class PostgresPool extends pg.Pool {
     @inject(CORE_COMMON.LOGGER)
     private readonly logger: Logger
   ) {
-    super(config.database.postgresPool)
+    super(infrastructureConfig.database.postgresPool)
 
     this.logger.info('Constructing new Postgres Pool')
   }

@@ -4,7 +4,6 @@ interface CommonRepositoryEntity {
   LoadedEntity?: unknown
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface Repository<TEntity extends CommonRepositoryEntity = any> {
   getEntity?: (
     identifier: TEntity['EntityIdentifier']

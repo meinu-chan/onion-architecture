@@ -6,10 +6,6 @@ export const CORE_SERVICE = {
   USER_SERVICE: Symbol.for('UserService')
 }
 
-export const CORE_ENTITY = {
-  USER_ENTITY: Symbol.for('UserEntity')
-}
-
 export const CORE_COMMON = {
   LOGGER: Symbol.for('Logger')
 }

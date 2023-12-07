@@ -2,6 +2,7 @@ import type { AddUserDto } from '../../repository/User/dto/AddUserDto.js'
 import { CORE_REPOSITORY } from '../../CoreSymbols.js'
 import { CoreError } from '../../common/errors/CoreError.js'
 import type { FindUserByIdentifierDto } from '../../repository/User/dto/FindUserByIdentifierDto.js'
+import { hashPassword } from './util/hash.js'
 import { inject, injectable } from 'inversify'
 import type { User } from '../../entity/User/User.js'
 import type { UserRepository } from '../../repository/User/UserRepository.js'
@@ -21,7 +22,10 @@ export class UserService {
       })
     }
 
-    return this.userRepository.save(dto)
+    return this.userRepository.save({
+      ...dto,
+      password: await hashPassword(dto.password)
+    })
   }
 
   public getUser(

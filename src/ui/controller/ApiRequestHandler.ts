@@ -19,14 +19,18 @@ export class ApiRequestHandler {
   ): Promise<TResponse> {
     try {
       const response = await request.handle()
-
       return response
-    } catch (error) {
+    } catch (error: any) {
+      this.logger.error(error)
+
       if (error instanceof CoreError) {
         coreToApiError(error)
       }
 
-      throw new ApiError('Something went wrong...', 'INTERNAL_SERVER_ERROR')
+      throw new ApiError(
+        error.message ?? 'Something went wrong...',
+        'INTERNAL_SERVER_ERROR'
+      )
     }
   }
 }
