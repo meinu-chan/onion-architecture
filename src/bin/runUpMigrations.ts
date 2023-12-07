@@ -2,7 +2,7 @@
 
 import pg from 'pg'
 import Postgrator from 'postgrator'
-import { config } from '../config/config.js'
+import { config } from '../infrastructure/config/config.js'
 import { join } from 'node:path'
 
 async function runUpMigrations(targetMigration: string) {

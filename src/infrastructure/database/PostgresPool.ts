@@ -1,5 +1,5 @@
 import pg from 'pg'
-import { config } from '../../config/config.js'
+import { config } from '../config/config.js'
 import { CORE_COMMON } from '../../core/CoreSymbols.js'
 import { inject, injectable } from 'inversify'
 import type { Logger } from '../../core/common/logger.js'

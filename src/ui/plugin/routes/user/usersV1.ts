@@ -1,9 +1,15 @@
-import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
-import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
+import type {
+  FastifyInstance,
+  FastifyPluginCallback,
+  FastifyPluginOptions,
+  FastifyReply,
+  FastifyRequest
+} from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
 import { statusCode } from '../../util/statusCode.js'
-import type { User } from '../../../core/entity/User/User.js'
-import type { UserService } from '../../../core/service/UserService/UserService.js'
+import { UI_SYMBOL_CONTROLLER } from '../../../UISymbols.js'
+import type { User } from '../../../../core/entity/User/User.js'
+import type { UserController } from '../../../controller/user/UserController.js'
 
 const createUserRequestSchema = Type.Object({
   email: Type.String({ format: 'email' }),
@@ -15,8 +21,7 @@ const createUserResponseSchema = Type.Object({
   id: Type.Number(),
   email: Type.String(),
   name: Type.String(),
-  created_at: Type.String(),
-  updated_at: Type.String()
+  created_at: Type.String()
 })
 
 export const usersV1: FastifyPluginCallback = (
@@ -24,7 +29,9 @@ export const usersV1: FastifyPluginCallback = (
   _opts: FastifyPluginOptions,
   done: (err?: Error) => void
 ): void => {
-  const userService = fastify.dc.get<UserService>(CORE_SERVICE.USER_SERVICE)
+  const userController = fastify.dc.get<UserController>(
+    UI_SYMBOL_CONTROLLER.USER_CONTROLLER
+  )
 
   fastify.post(
     '/users',
@@ -40,9 +47,7 @@ export const usersV1: FastifyPluginCallback = (
       request: FastifyRequest<{ Body: Static<typeof createUserRequestSchema> }>,
       reply: FastifyReply
     ): Promise<User> => {
-      const body = request.body
-
-      const user = await userService.saveUser(body)
+      const user = await userController.createUser(request.body)
 
       void reply.status(statusCode.CREATED)
 

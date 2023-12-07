@@ -1,6 +1,6 @@
 import { ApiError } from './ApiError.js'
 import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
-import { statusCode } from '../../plugin/util/statusCode.js'
+import { statusCode } from '../statusCode.js'
 
 type ServerError = FastifyError | ApiError
 
