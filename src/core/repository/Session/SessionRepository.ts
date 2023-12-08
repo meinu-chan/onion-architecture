@@ -1,10 +1,12 @@
-import type { SignInDto } from './dto/SignInDto.js'
-import type { SignUpDto } from './dto/SignUpDto.js'
-import type { User } from '../../entity/User/User.js'
+import type { SaveSessionDto } from './dto/SaveSessionDto.js'
+import type { Session } from '../../entity/Session/Session.js'
 
 export interface SessionRepository {
-  signIn: (dto: SignInDto) => Promise<User>
-  signUp: (dto: SignUpDto) => Promise<User>
+  save: (dto: SaveSessionDto) => Promise<Session>
+  updateByRefreshToken: (refreshToken: string) => Promise<Session>
 
-  logOut: () => Promise<void>
+  findByRefreshToken: (refreshToken: string) => Promise<Session | undefined>
+  countByUser: (userId: number) => Promise<number>
+
+  removeByRefreshToken: (refreshToken: string) => Promise<void>
 }

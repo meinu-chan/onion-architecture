@@ -1,6 +1,6 @@
-import { coreConfig } from '../../common/config.js'
+import { coreConfig } from '../../../common/config.js'
 import { createDecoder, createSigner } from 'fast-jwt'
-import type { User } from '../../entity/User/User.js'
+import type { User } from '../../../entity/User/User.js'
 
 export interface JWTService {
   createAccessToken: (id: number) => Promise<string>

@@ -1,5 +1,6 @@
 import { AppModule } from './common/AppModule.js'
 import { Container } from 'inversify'
+import { SessionModule } from './session/SessionModule.js'
 import { UserModule } from './user/UserModule.js'
 
 export class AppContainer extends Container {
@@ -11,5 +12,6 @@ export class AppContainer extends Container {
 
     this.load(new AppModule())
     this.load(new UserModule())
+    this.load(new SessionModule())
   }
 }

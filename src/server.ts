@@ -3,7 +3,7 @@ import { dependencyContainerPlugin } from './ui/plugin/dependencyContainerPlugin
 import { errorHandler } from './ui/plugin/util/error/errorHandler.js'
 import type { Server } from 'http'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { usersV1 } from './ui/plugin/routes/user/usersV1.js'
+import { usersV1 } from './ui/plugin/routes/session/sessionsV1.js'
 
 export function getServer(): FastifyInstance<Server> {
   const server = fastify<Server>({

@@ -19,7 +19,8 @@ const coreErrorReasonToApiError: Record<
   ResponseStatus
 > = {
   default: 'BAD_REQUEST',
-  duplicate: 'BAD_REQUEST'
+  duplicate: 'BAD_REQUEST',
+  not_found: 'NOT_FOUND'
 }
 
 export function coreToApiError(err: CoreError): void | never {
