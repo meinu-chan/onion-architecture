@@ -1,11 +1,9 @@
 import fastify, { FastifyInstance } from 'fastify'
-import { dependencyContainerPlugin } from './plugin/dependencyContainerPlugin.js'
-import { errorHandler } from './util/error/errorHandler.js'
-import { PostgresDataService } from './database/postgres/PostgresRepositoryService.js'
+import { dependencyContainerPlugin } from './ui/plugin/dependencyContainerPlugin.js'
+import { errorHandler } from './ui/plugin/util/error/errorHandler.js'
 import type { Server } from 'http'
-import { setDataService } from './util/setDataService.js'
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { usersV1 } from './plugin/routes/user/usersV1.js'
+import { usersV1 } from './ui/plugin/routes/session/sessionsV1.js'
 
 export function getServer(): FastifyInstance<Server> {
   const server = fastify<Server>({
@@ -21,8 +19,6 @@ export function getServer(): FastifyInstance<Server> {
 
   server.withTypeProvider<TypeBoxTypeProvider>()
   server.setErrorHandler(errorHandler)
-
-  setDataService(PostgresDataService)
 
   void server.register(dependencyContainerPlugin)
 

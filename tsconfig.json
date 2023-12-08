@@ -16,7 +16,9 @@
     "sourceMap": true,
     "importsNotUsedAsValues": "error",
     "ignoreDeprecations": "5.0",
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]
