@@ -1,7 +1,5 @@
-import { AppModule } from './common/AppModule.js'
 import { Container } from 'inversify'
-import { SessionModule } from './session/SessionModule.js'
-import { UserModule } from './user/UserModule.js'
+import { modules } from './_list.js'
 
 export class AppContainer extends Container {
   public constructor() {
@@ -10,8 +8,6 @@ export class AppContainer extends Container {
       skipBaseClassChecks: true
     })
 
-    this.load(new AppModule())
-    this.load(new UserModule())
-    this.load(new SessionModule())
+    this.load(...modules.map((Module) => new Module()))
   }
 }

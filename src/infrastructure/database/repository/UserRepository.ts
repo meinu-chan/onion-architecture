@@ -1,4 +1,4 @@
-import type { AddUserDto } from '../../../core/repository/User/dto/AddUserDto.js'
+import type { CreateUserRequest } from '../../../core/repository/User/request/CreateUserRequest.js'
 import { INFRASTRUCTURE_DATA_MAPPER } from '../../InfrastructureSymbols.js'
 import { inject, injectable } from 'inversify'
 import { PostgresPool } from '../PostgresPool.js'
@@ -46,7 +46,7 @@ export class PostgresUserRepository implements UserRepository {
       : undefined
   }
 
-  public async save(entity: AddUserDto): Promise<User> {
+  public async save(entity: CreateUserRequest): Promise<User> {
     const result = await this.postgresPool.query<LoadedUserEntity>(
       `
         INSERT INTO users (

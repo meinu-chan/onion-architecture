@@ -1,15 +1,15 @@
-import { ApiRequestHandler } from '../../ui/controller/ApiRequestHandler.js'
-import { AuthenticationService } from '../../core/service/common/Authentication/AuthenticationService.js'
+import { ApiRequestHandler } from '../presentation/controller/ApiRequestHandler.js'
+import { AuthenticationService } from '../core/service/common/Authentication/AuthenticationService.js'
 import { ContainerModule } from 'inversify'
-import { CORE_COMMON, CORE_SERVICE } from '../../core/CoreSymbols.js'
+import { CORE_COMMON, CORE_SERVICE } from '../core/CoreSymbols.js'
 import type { Logger } from 'winston'
-import { loggerFactory } from '../../core/common/logger.js'
-import { PasswordService } from '../../core/service/common/Password/PasswordService.js'
-import { PostgresPool } from '../../infrastructure/database/PostgresPool.js'
+import { loggerFactory } from '../core/common/logger.js'
+import { PasswordService } from '../core/service/common/Password/PasswordService.js'
+import { PostgresPool } from '../infrastructure/database/PostgresPool.js'
 import {
   jwtService,
   type JWTService
-} from '../../core/service/common/JWT/JWTService.js'
+} from '../core/service/common/JWT/JWTService.js'
 
 export class AppModule extends ContainerModule {
   public constructor() {

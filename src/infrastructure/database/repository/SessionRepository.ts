@@ -1,7 +1,7 @@
 import { INFRASTRUCTURE_DATA_MAPPER } from '../../InfrastructureSymbols.js'
 import { inject, injectable } from 'inversify'
 import { PostgresPool } from '../PostgresPool.js'
-import type { SaveSessionDto } from '../../../core/repository/Session/dto/SaveSessionDto.js'
+import type { SaveSessionRequest } from '../../../core/repository/Session/request/SaveSessionRequest.js'
 import type { Session } from '../../../core/entity/Session/Session.js'
 import type { SessionDataMapper } from '../mappers/SessionMapper.js'
 import type { SessionRepository } from '../../../core/repository/Session/SessionRepository.js'
@@ -27,7 +27,7 @@ export class PostgresSessionRepository implements SessionRepository {
     private readonly dataMapper: SessionDataMapper
   ) {}
 
-  public async save(entity: SaveSessionDto): Promise<Session> {
+  public async save(entity: SaveSessionRequest): Promise<Session> {
     const result = await this.postgresPool.query<LoadedSessionEntity>(
       `
             INSERT INTO sessions (
@@ -53,7 +53,7 @@ export class PostgresSessionRepository implements SessionRepository {
       [refreshToken]
     )
 
-    return result.rows[0]
+    return this.dataMapper.toDomain(result.rows[0])
   }
 
   public async findByRefreshToken(
@@ -67,7 +67,7 @@ export class PostgresSessionRepository implements SessionRepository {
       [refreshToken]
     )
 
-    return result.rows[0]
+    return result.rows[0] ? this.dataMapper.toDomain(result.rows[0]) : undefined
   }
 
   public async countByUser(userId: number): Promise<number> {

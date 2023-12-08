@@ -1,10 +1,10 @@
-import type { AddUserDto } from './dto/AddUserDto.js'
-import type { FindUserByIdentifierDto } from './dto/FindUserByIdentifierDto.js'
+import type { CreateUserRequest } from './request/CreateUserRequest.js'
+import type { FindUserByIdentifierRequest } from './request/FindUserByIdentifierRequest.js'
 import type { User } from '../../entity/User/User.js'
 
 export interface UserRepository {
-  save: (dto: AddUserDto) => Promise<User>
+  save: (entity: CreateUserRequest) => Promise<User>
   getByIdentifier: (
-    identifier: FindUserByIdentifierDto
+    identifier: FindUserByIdentifierRequest
   ) => Promise<User | undefined>
 }

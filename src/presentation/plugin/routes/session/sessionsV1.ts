@@ -1,9 +1,9 @@
 import type { FastifyInstance, FastifyPluginCallback, FastifyPluginOptions, FastifyReply, FastifyRequest } from 'fastify'
+import { PRESENTATION_SYMBOL_CONTROLLER } from '../../../PresentationSymbols.js'
 import type { SessionController } from '../../../controller/session/SessionController.js'
-import type { SessionWithAccessTokenDto } from '../../../../core/repository/Session/dto/SessionWithAccessTokenDto.js'
+import type { SessionWithAccessToken } from '../../../../core/repository/Session/request/SessionWithAccessTokenRequest.js'
 import { Static, Type } from '@sinclair/typebox'
 import { statusCode } from '../../util/statusCode.js'
-import { UI_SYMBOL_CONTROLLER } from '../../../UISymbols.js'
 
 const signUpRequestSchema = Type.Object({
   email: Type.String({ format: 'email' }),
@@ -27,7 +27,7 @@ export const usersV1: FastifyPluginCallback = (
   done: (err?: Error) => void
 ): void => {
   const sessionController = fastify.dc.get<SessionController>(
-    UI_SYMBOL_CONTROLLER.SESSION_CONTROLLER
+    PRESENTATION_SYMBOL_CONTROLLER.SESSION_CONTROLLER
   )
 
   fastify.post(
@@ -43,7 +43,7 @@ export const usersV1: FastifyPluginCallback = (
     async (
       request: FastifyRequest<{ Body: Static<typeof signUpRequestSchema> }>,
       reply: FastifyReply
-    ): Promise<SessionWithAccessTokenDto> => {
+    ): Promise<SessionWithAccessToken> => {
       const user = await sessionController.signUp(request.body)
 
       void reply.status(statusCode.CREATED)
@@ -65,7 +65,7 @@ export const usersV1: FastifyPluginCallback = (
     async (
       request: FastifyRequest<{ Body: Static<typeof signInRequestSchema> }>,
       reply: FastifyReply
-    ): Promise<SessionWithAccessTokenDto> => {
+    ): Promise<SessionWithAccessToken> => {
       const user = await sessionController.signIn(request.body)
 
       void reply.status(statusCode.OK)

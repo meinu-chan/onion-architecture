@@ -3,9 +3,9 @@ import { CoreError } from '../../../common/errors/CoreError.js'
 import { inject, injectable } from 'inversify'
 import type { PasswordService } from '../Password/PasswordService.js'
 import type { SessionService } from '../../Session/SessionService.js'
-import type { SessionWithAccessTokenDto } from '../../../repository/Session/dto/SessionWithAccessTokenDto.js'
-import type { SignInDto } from './dto/SignInDto.js'
-import type { SignUpDto } from './dto/SignUpDto.js'
+import type { SessionWithAccessToken } from '../../../repository/Session/request/SessionWithAccessTokenRequest.js'
+import type { SignInRequest } from './request/SignInRequest.js'
+import type { SignUpRequest } from './request/SignUpRequest.js'
 import type { UserService } from '../../User/UserService.js'
 
 @injectable()
@@ -19,7 +19,7 @@ export class AuthenticationService {
     private readonly passwordUtil: PasswordService
   ) {}
 
-  public async signIn(dto: SignInDto): Promise<SessionWithAccessTokenDto> {
+  public async signIn(dto: SignInRequest): Promise<SessionWithAccessToken> {
     const user = await this.userService.getUser({ email: dto.email })
 
     if (
@@ -35,7 +35,7 @@ export class AuthenticationService {
     return this.sessionService.createSession(user.id)
   }
 
-  public async signUp(dto: SignUpDto): Promise<SessionWithAccessTokenDto> {
+  public async signUp(dto: SignUpRequest): Promise<SessionWithAccessToken> {
     if (await this.userService.getUser({ email: dto.email })) {
       throw new CoreError('Passed email already taken', {
         reason: 'duplicate',
