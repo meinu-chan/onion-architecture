@@ -30,7 +30,21 @@ export class PostgresUserRepository implements UserRepository {
     private readonly dataMapper: UserDataMapper
   ) {}
 
-  public async getByIdentifier(
+  public async getById(id: number): Promise<User | undefined> {
+    const result = await this.postgresPool.query<LoadedUserEntity>(
+      `
+        SELECT * FROM users
+        WHERE id = $1
+      `,
+      [id]
+    )
+
+    if (result.rowCount) {
+      return this.dataMapper.toDomain(result.rows[0])
+    }
+  }
+
+  public async getByUniqueValue(
     identifier: UserEntityIdentifier
   ): Promise<User | undefined> {
     const result = await this.postgresPool.query<LoadedUserEntity>(
@@ -41,9 +55,9 @@ export class PostgresUserRepository implements UserRepository {
       [identifier.email]
     )
 
-    return result.rowCount
-      ? this.dataMapper.toDomain(result.rows[0])
-      : undefined
+    if (result.rowCount) {
+      return this.dataMapper.toDomain(result.rows[0])
+    }
   }
 
   public async save(entity: CreateUserRequest): Promise<User> {

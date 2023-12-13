@@ -5,4 +5,8 @@ declare module 'fastify' {
   interface FastifyInstance {
     dc: Container
   }
+
+  interface FastifyRequest {
+    user: { id: number }
+  }
 }

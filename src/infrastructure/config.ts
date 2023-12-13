@@ -1,16 +1,3 @@
-import { configDotenv } from 'dotenv'
-import type { PoolConfig } from 'pg'
+import { config, type InfrastructureConfig } from '../config.js'
 
-configDotenv()
-
-interface InfrastructureConfig {
-  database: {
-    postgresPool: PoolConfig
-  }
-}
-
-export const infrastructureConfig: InfrastructureConfig = {
-  database: {
-    postgresPool: {}
-  }
-}
+export const infrastructureConfig: InfrastructureConfig = config.infrastructure

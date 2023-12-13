@@ -1,6 +1,7 @@
 import { CORE_SERVICE } from '../../../CoreSymbols.js'
 import { CoreError } from '../../../common/errors/CoreError.js'
 import { inject, injectable } from 'inversify'
+import type { LogOutRequest } from './request/LogOutRequest.js'
 import type { PasswordService } from '../Password/PasswordService.js'
 import type { SessionService } from '../../Session/SessionService.js'
 import type { SessionWithAccessToken } from '../../../repository/Session/request/SessionWithAccessTokenRequest.js'
@@ -19,12 +20,17 @@ export class AuthenticationService {
     private readonly passwordUtil: PasswordService
   ) {}
 
-  public async signIn(dto: SignInRequest): Promise<SessionWithAccessToken> {
-    const user = await this.userService.getUser({ email: dto.email })
+  public async authenticate(
+    request: SignInRequest
+  ): Promise<SessionWithAccessToken> {
+    const user = await this.userService.getUser({ email: request.email })
 
     if (
       !user ||
-      !(await this.passwordUtil.comparePassword(dto.password, user.password))
+      !(await this.passwordUtil.comparePassword(
+        request.password,
+        user.password
+      ))
     ) {
       throw new CoreError('Invalid email or password mismatch', {
         reason: 'default',
@@ -35,26 +41,28 @@ export class AuthenticationService {
     return this.sessionService.createSession(user.id)
   }
 
-  public async signUp(dto: SignUpRequest): Promise<SessionWithAccessToken> {
-    if (await this.userService.getUser({ email: dto.email })) {
+  public async register(
+    request: SignUpRequest
+  ): Promise<SessionWithAccessToken> {
+    if (await this.userService.getUser({ email: request.email })) {
       throw new CoreError('Passed email already taken', {
         reason: 'duplicate',
         unhandledError: false
       })
     }
 
-    const password = await this.passwordUtil.hashPassword(dto.password)
+    const password = await this.passwordUtil.hashPassword(request.password)
 
     const user = await this.userService.saveUser({
-      email: dto.email,
-      name: dto.name,
+      email: request.email,
+      name: request.name,
       password
     })
 
     return this.sessionService.createSession(user.id)
   }
 
-  public async logOut(refreshToken: string): Promise<void> {
-    await this.sessionService.removeSession(refreshToken)
+  public async logOut(request: LogOutRequest): Promise<void> {
+    await this.sessionService.removeSession(request.refreshToken)
   }
 }

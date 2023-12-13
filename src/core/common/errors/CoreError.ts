@@ -1,6 +1,6 @@
 interface CoreErrorMetadata {
   unhandledError?: boolean
-  reason: 'default' | 'duplicate' | 'not_found'
+  reason: 'default' | 'duplicate' | 'not_found' | 'unauthorize'
 }
 
 export class CoreError extends Error {

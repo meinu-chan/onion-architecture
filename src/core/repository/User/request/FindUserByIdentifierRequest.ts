@@ -1,3 +1,3 @@
-export interface FindUserByIdentifierRequest {
+export interface FindUserByUniqueValuesRequest {
   readonly email: string
 }

@@ -10,6 +10,6 @@ export class SignUpAPIRequest implements ApiRequest<SessionWithAccessToken> {
   ) {}
 
   public handle(): Promise<SessionWithAccessToken> {
-    return this.authService.signUp(this.dto)
+    return this.authService.register(this.dto)
   }
 }

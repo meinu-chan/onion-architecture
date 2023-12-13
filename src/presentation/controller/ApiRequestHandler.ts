@@ -1,4 +1,4 @@
-import { ApiError, coreToApiError } from '../plugin/util/error/ApiError.js'
+import { ApiError, coreToApiError } from '../api/util/error/ApiError.js'
 import { CORE_COMMON } from '../../core/CoreSymbols.js'
 import { CoreError } from '../../core/common/errors/CoreError.js'
 import { inject, injectable } from 'inversify'

@@ -20,7 +20,8 @@ const coreErrorReasonToApiError: Record<
 > = {
   default: 'BAD_REQUEST',
   duplicate: 'BAD_REQUEST',
-  not_found: 'NOT_FOUND'
+  not_found: 'NOT_FOUND',
+  unauthorize: 'UNAUTHORIZED'
 }
 
 export function coreToApiError(err: CoreError): void | never {

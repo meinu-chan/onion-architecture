@@ -3,6 +3,7 @@ import type { AuthenticationService } from '../../../core/service/common/Authent
 import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
 import type { CreateUserRequest } from '../../../core/repository/User/request/CreateUserRequest.js'
 import { inject, injectable } from 'inversify'
+import { LogOutAPIRequest } from './requests/LogOutRequest.js'
 import type { SessionWithAccessToken } from '../../../core/repository/Session/request/SessionWithAccessTokenRequest.js'
 import { SignInAPIRequest } from './requests/SignInRequest.js'
 import type { SignInRequest } from '../../../core/service/common/Authentication/request/SignInRequest.js'
@@ -26,6 +27,12 @@ export class SessionController {
   public signIn(request: SignInRequest): Promise<SessionWithAccessToken> {
     return this.apiRequestHandler.handle(
       new SignInAPIRequest(this.authService, request)
+    )
+  }
+
+  public logOut(refreshToken: string): Promise<void> {
+    return this.apiRequestHandler.handle(
+      new LogOutAPIRequest(this.authService, { refreshToken })
     )
   }
 }
