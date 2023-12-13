@@ -1,5 +1,5 @@
 {
-  "name": "dependecy-injection",
+  "name": "onion-architecture",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -8,6 +8,7 @@
     "build:clean": "rm *.tsbuildinfo && rm -rf dist/* && tsc",
     "lint": "eslint --ext .ts src",
     "start": "node bin/apiServer",
+    "start:dev": "nodemon bin/apiServer",
     "migrate:up": "node bin/runUpMigrations"
   },
   "keywords": [],
@@ -20,6 +21,7 @@
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "eslint": "^8.52.0",
+    "nodemon": "^3.0.2",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   },
@@ -27,10 +29,13 @@
     "@fastify/type-provider-typebox": "^3.5.0",
     "@sinclair/typebox": "^0.31.28",
     "dotenv": "^16.3.1",
+    "fast-jwt": "^3.3.2",
     "fastify": "^4.24.3",
     "fastify-plugin": "^4.5.1",
+    "inversify": "^6.0.2",
     "pg": "^8.11.3",
     "postgrator": "^7.2.0",
+    "reflect-metadata": "^0.1.13",
     "tslib": "^2.6.2",
     "winston": "^3.11.0"
   }

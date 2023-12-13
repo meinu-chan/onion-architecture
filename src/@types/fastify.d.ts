@@ -1,8 +1,8 @@
-import type { DependencyContainer } from '../dependency/DependencyContainer.ts'
+import type { Container } from 'inversify'
 import 'fastify'
 
 declare module 'fastify' {
   interface FastifyInstance {
-    dc: DependencyContainer
+    dc: Container
   }
 }

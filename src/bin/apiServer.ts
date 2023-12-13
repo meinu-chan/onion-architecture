@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-
-import { getIntegerFromEnv } from '../config/getFromEnv.js'
+import 'reflect-metadata'
 import { getServer } from '../server.js'
+import { getIntegerFromEnv } from '../util/getIntegerFromEnv.js'
 
 const server = getServer()
 

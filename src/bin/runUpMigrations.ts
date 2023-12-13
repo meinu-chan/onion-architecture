@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
+import 'reflect-metadata'
 import pg from 'pg'
 import Postgrator from 'postgrator'
-import { config } from '../config/config.js'
-import { processDependencyContainer } from '../dependency/ProcessDependencyContainer.js'
-import { LOGGER, type Logger } from '../util/logger.js'
+import { AppContainer } from '../dependecy/AppContainer.js'
+import { CORE_COMMON } from '../core/CoreSymbols.js'
+import { infrastructureConfig } from '../infrastructure/config.js'
+import type { Logger } from '../core/common/logger.js'
+
 import { join } from 'node:path'
 
 async function runUpMigrations(targetMigration: string) {
-  const dbConfig = config.database.postgresPool
-  const logger = processDependencyContainer.resolve<Logger>(LOGGER)
+  const dbConfig = infrastructureConfig.database.postgresPool
+  const logger = new AppContainer().get<Logger>(CORE_COMMON.LOGGER)
   const client = new pg.Client(dbConfig)
 
   const pathToMigrations = join(
