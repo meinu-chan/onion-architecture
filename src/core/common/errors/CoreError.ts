@@ -1,17 +1,15 @@
-interface CoreErrorMetadata {
-  unhandledError?: boolean
-  reason: 'default' | 'duplicate' | 'not_found' | 'unauthorize'
-}
+type CoreErrorType =
+  | 'entity_duplicate'
+  | 'invalid_data'
+  | 'not_found'
+  | 'unauthorized'
+  | 'core'
 
 export class CoreError extends Error {
-  public metadata: CoreErrorMetadata
+  public type: CoreErrorType
 
-  public constructor(
-    message: string,
-    metadata: CoreErrorMetadata = { unhandledError: true, reason: 'default' }
-  ) {
+  public constructor(message: string, type: CoreErrorType = 'core') {
     super(message)
-
-    this.metadata = metadata
+    this.type = type
   }
 }

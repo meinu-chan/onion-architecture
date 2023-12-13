@@ -5,8 +5,6 @@ import { presentationConfig } from '../../config.js'
 import type { SessionController } from '../../controller/session/SessionController.js'
 import type { SessionWithAccessToken } from '../../../core/repository/Session/request/SessionWithAccessTokenRequest.js'
 import { Static, Type } from '@sinclair/typebox'
-import { statusCode } from '../util/statusCode.js'
-// import { tokenAuth } from '../service/authToken.js'
 
 const signUpRequestSchema = Type.Object({
   email: Type.String({ format: 'email' }),
@@ -51,7 +49,7 @@ export const sessionsV1: FastifyPluginCallback = (
     ): Promise<SessionWithAccessToken> => {
       const session = await sessionController.signUp(request.body)
 
-      void reply.status(statusCode.CREATED)
+      void reply.status(201)
       void reply.setCookie(COOKIE_TOKEN, session.refreshToken, {
         maxAge: presentationConfig.session.maxAge
       })
@@ -76,7 +74,7 @@ export const sessionsV1: FastifyPluginCallback = (
     ): Promise<SessionWithAccessToken> => {
       const session = await sessionController.signIn(request.body)
 
-      void reply.status(statusCode.OK)
+      void reply.status(200)
       void reply.setCookie(COOKIE_TOKEN, session.refreshToken, {
         maxAge: presentationConfig.session.maxAge
       })
@@ -98,7 +96,7 @@ export const sessionsV1: FastifyPluginCallback = (
     async (request: FastifyRequest, reply: FastifyReply): Promise<void> => {
       await sessionController.logOut(request.cookies[COOKIE_TOKEN]!)
 
-      void reply.status(statusCode.NO_CONTENT)
+      void reply.status(204)
       void reply.clearCookie(COOKIE_TOKEN, { expires: new Date() })
 
       // return session

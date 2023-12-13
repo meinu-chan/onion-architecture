@@ -32,23 +32,15 @@ export class AuthenticationService {
         user.password
       ))
     ) {
-      throw new CoreError('Invalid email or password mismatch', {
-        reason: 'default',
-        unhandledError: false
-      })
+      throw new CoreError('Invalid email or password mismatch', 'invalid_data')
     }
 
     return this.sessionService.createSession(user.id)
   }
 
-  public async register(
-    request: SignUpRequest
-  ): Promise<SessionWithAccessToken> {
+  public async signUp(request: SignUpRequest): Promise<SessionWithAccessToken> {
     if (await this.userService.getUser({ email: request.email })) {
-      throw new CoreError('Passed email already taken', {
-        reason: 'duplicate',
-        unhandledError: false
-      })
+      throw new CoreError('Passed email already taken', 'entity_duplicate')
     }
 
     const password = await this.passwordUtil.hashPassword(request.password)

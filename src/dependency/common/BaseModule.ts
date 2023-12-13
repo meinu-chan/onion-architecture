@@ -13,9 +13,7 @@ export abstract class BaseModule extends ContainerModule {
 
         if (!Declaration) {
           throw new CoreError(
-            `Cannot start. Missing declaration for the '${String(
-              declarationSymbol
-            )}' token.`
+            `Missing declaration for the '${String(declarationSymbol)}' token.`
           )
         }
 

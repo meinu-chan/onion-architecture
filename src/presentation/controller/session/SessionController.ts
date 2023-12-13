@@ -20,19 +20,28 @@ export class SessionController {
 
   public signUp(request: CreateUserRequest): Promise<SessionWithAccessToken> {
     return this.apiRequestHandler.handle(
-      new SignUpAPIRequest(this.authService, request)
+      new SignUpAPIRequest({
+        services: { authService: this.authService },
+        payload: request
+      })
     )
   }
 
   public signIn(request: SignInRequest): Promise<SessionWithAccessToken> {
     return this.apiRequestHandler.handle(
-      new SignInAPIRequest(this.authService, request)
+      new SignInAPIRequest({
+        services: { authService: this.authService },
+        payload: request
+      })
     )
   }
 
   public logOut(refreshToken: string): Promise<void> {
     return this.apiRequestHandler.handle(
-      new LogOutAPIRequest(this.authService, { refreshToken })
+      new LogOutAPIRequest({
+        services: { authService: this.authService },
+        payload: { refreshToken }
+      })
     )
   }
 }

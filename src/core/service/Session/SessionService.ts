@@ -41,21 +41,18 @@ export class SessionService {
 
     if (!session) {
       throw new CoreError(
-        `Cannot refresh session has been passed invalid 'refreshToken'.`,
-        {
-          unhandledError: false,
-          reason: 'unauthorize'
-        }
+        `Cannot refresh session has been passed invalid 'refreshToken'`,
+        'unauthorized'
       )
     }
 
     const user = await this.userService.getUserById(session.userId)
 
     if (!user) {
-      throw new CoreError('Cannot refresh no user belongs to passed token.', {
-        unhandledError: false,
-        reason: 'unauthorize'
-      })
+      throw new CoreError(
+        'Cannot refresh no user belongs to passed token',
+        'unauthorized'
+      )
     }
 
     return {

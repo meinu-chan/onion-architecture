@@ -15,10 +15,7 @@ export class UserService {
 
   public async saveUser(dto: CreateUserRequest): Promise<User> {
     if (await this.userRepository.getByUniqueValue(dto)) {
-      throw new CoreError("Duplicate of user's identifiers", {
-        unhandledError: false,
-        reason: 'duplicate'
-      })
+      throw new CoreError("Duplicate of user's identifiers", 'entity_duplicate')
     }
 
     return this.userRepository.save(dto)

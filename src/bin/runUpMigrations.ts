@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import 'reflect-metadata'
 import pg from 'pg'
 import Postgrator from 'postgrator'
-import { AppContainer } from '../dependecy/AppContainer.js'
+import { AppContainer } from '../dependency/AppContainer.js'
 import { CORE_COMMON } from '../core/CoreSymbols.js'
 import { infrastructureConfig } from '../infrastructure/config.js'
 import type { Logger } from '../core/common/logger.js'
+import 'reflect-metadata'
 
 import { join } from 'node:path'
 

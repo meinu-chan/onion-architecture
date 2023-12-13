@@ -1,11 +1,21 @@
-import { ApiError, coreToApiError } from '../api/util/error/ApiError.js'
+import { ApiError } from '../api/util/error/ApiError.js'
 import { CORE_COMMON } from '../../core/CoreSymbols.js'
-import { CoreError } from '../../core/common/errors/CoreError.js'
 import { inject, injectable } from 'inversify'
 import type { Logger } from '../../core/common/logger.js'
 
-export interface ApiRequest<TResponse> {
-  handle: () => Promise<TResponse>
+interface Request<TServices extends Record<string, unknown>, TPayload> {
+  services: TServices
+  payload: TPayload
+}
+
+export abstract class ApiRequest<
+  TResponse,
+  TServices extends Record<string, unknown> = Record<string, unknown>,
+  TPayload = unknown
+> {
+  public constructor(protected request: Request<TServices, TPayload>) {}
+
+  public abstract handle(): Promise<TResponse>
 }
 
 @injectable()
@@ -23,14 +33,7 @@ export class ApiRequestHandler {
     } catch (error: any) {
       this.logger.error(error)
 
-      if (error instanceof CoreError) {
-        coreToApiError(error)
-      }
-
-      throw new ApiError(
-        error.message ?? 'Something went wrong...',
-        'INTERNAL_SERVER_ERROR'
-      )
+      throw ApiError.from(error)
     }
   }
 }

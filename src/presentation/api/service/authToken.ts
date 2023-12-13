@@ -22,7 +22,7 @@ export async function authToken(
   let userId: number
 
   if (!accessToken) {
-    throw new ApiError('Unauthorized', 'UNAUTHORIZED')
+    throw new ApiError('Unauthorized', 401)
   }
 
   const sessionService = this.dc.get<SessionService>(
@@ -32,7 +32,7 @@ export async function authToken(
   const sessionData = await sessionService.verifySession(accessToken)
 
   if (!sessionData) {
-    throw new ApiError('Unauthorized', 'UNAUTHORIZED')
+    throw new ApiError('Unauthorized', 401)
   }
 
   if (sessionData.expired && request.cookies?.TOKEN) {

@@ -1,36 +1,33 @@
-import type { CoreError } from '../../../../core/common/errors/CoreError.js'
-import { statusCode, type ResponseStatus } from '../statusCode.js'
+import { CoreError } from '../../../../core/common/errors/CoreError.js'
+import { STATUS_CODES } from 'node:http'
 
 export class ApiError extends Error {
-  public get code(): (typeof statusCode)[ResponseStatus] {
-    return statusCode[this.status]
+  public get status(): string {
+    return STATUS_CODES[this.statusCode] ?? 'Internal Server Error'
   }
 
   public constructor(
     message: string,
-    public status: ResponseStatus
+    public statusCode: number = 500
   ) {
     super(message)
   }
-}
 
-const coreErrorReasonToApiError: Record<
-  CoreError['metadata']['reason'],
-  ResponseStatus
-> = {
-  default: 'BAD_REQUEST',
-  duplicate: 'BAD_REQUEST',
-  not_found: 'NOT_FOUND',
-  unauthorize: 'UNAUTHORIZED'
-}
+  public static from(error: any): ApiError {
+    if (error instanceof CoreError) {
+      switch (error.type) {
+        case 'entity_duplicate':
+        case 'invalid_data':
+          return new ApiError(error.message, 400)
 
-export function coreToApiError(err: CoreError): void | never {
-  if (err.metadata.unhandledError) {
-    return
+        case 'not_found':
+          return new ApiError(error.message, 404)
+
+        default:
+          return new ApiError('Something went wrong', 500)
+      }
+    }
+
+    return new ApiError(error.message ?? 'Server Error.', 500)
   }
-
-  throw new ApiError(
-    err.message,
-    coreErrorReasonToApiError[err.metadata.reason]
-  )
 }
