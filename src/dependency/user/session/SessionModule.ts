@@ -4,8 +4,8 @@ import { INFRASTRUCTURE_DATA_MAPPER } from '../../../infrastructure/Infrastructu
 import { PostgresSessionRepository } from '../../../infrastructure/database/repository/SessionRepository.js'
 import { PRESENTATION_SYMBOL_CONTROLLER } from '../../../presentation/PresentationSymbols.js'
 import { SessionController } from '../../../presentation/controller/session/SessionController.js'
-import { SessionDataMapper } from '../../../infrastructure/database/mappers/SessionMapper.js'
-import { SessionService } from '../../../core/service/Session/SessionService.js'
+import { SessionDataMapper } from '../../../infrastructure/database/mappers/session.js'
+import { SessionService } from '../../../core/service/session/index.js'
 
 export class SessionModule extends BaseModule {
   protected getDeclarationDependencyMap(): [

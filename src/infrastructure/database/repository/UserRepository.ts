@@ -1,10 +1,9 @@
-import type { CreateUserRequest } from '../../../core/repository/User/request/CreateUserRequest.js'
-import { INFRASTRUCTURE_DATA_MAPPER } from '../../InfrastructureSymbols.js'
+import type { CreateUserRequest } from '../../../core/repository/user/request/CreateUserRequest.js'
 import { inject, injectable } from 'inversify'
 import { PostgresPool } from '../PostgresPool.js'
-import type { User } from '../../../core/entity/User/User.js'
-import type { UserDataMapper } from '../mappers/UserMapper.js'
-import type { UserRepository } from '../../../core/repository/User/UserRepository.js'
+import type { User } from '../../../core/model/user/index.js'
+import { userDataMapper } from '../mappers/user.js'
+import type { UserRepository } from '../../../core/repository/user/index.js'
 
 export interface UserEntityIdentifier {
   email: string
@@ -25,9 +24,7 @@ export interface LoadedUserEntity extends UserEntity {
 @injectable()
 export class PostgresUserRepository implements UserRepository {
   public constructor(
-    @inject(PostgresPool) private readonly postgresPool: PostgresPool,
-    @inject(INFRASTRUCTURE_DATA_MAPPER.USER_DATA_MAPPER)
-    private readonly dataMapper: UserDataMapper
+    @inject(PostgresPool) private readonly postgresPool: PostgresPool
   ) {}
 
   public async getById(id: number): Promise<User | undefined> {
@@ -39,9 +36,7 @@ export class PostgresUserRepository implements UserRepository {
       [id]
     )
 
-    if (result.rowCount) {
-      return this.dataMapper.toDomain(result.rows[0])
-    }
+    return userDataMapper(result.rows[0])
   }
 
   public async getByUniqueValue(
@@ -55,9 +50,7 @@ export class PostgresUserRepository implements UserRepository {
       [identifier.email]
     )
 
-    if (result.rowCount) {
-      return this.dataMapper.toDomain(result.rows[0])
-    }
+    return userDataMapper(result.rows[0])
   }
 
   public async save(entity: CreateUserRequest): Promise<User> {
@@ -72,6 +65,6 @@ export class PostgresUserRepository implements UserRepository {
       [entity.name, entity.email, entity.password]
     )
 
-    return this.dataMapper.toDomain(result.rows[0])
+    return userDataMapper(result.rows[0])
   }
 }

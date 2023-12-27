@@ -1,10 +1,9 @@
-import { INFRASTRUCTURE_DATA_MAPPER } from '../../InfrastructureSymbols.js'
 import { inject, injectable } from 'inversify'
 import { PostgresPool } from '../PostgresPool.js'
-import type { SaveSessionRequest } from '../../../core/repository/Session/request/SaveSessionRequest.js'
-import type { Session } from '../../../core/entity/Session/Session.js'
-import type { SessionDataMapper } from '../mappers/SessionMapper.js'
-import type { SessionRepository } from '../../../core/repository/Session/SessionRepository.js'
+import type { SaveSessionRequest } from '../../../core/repository/session/request/SaveSessionRequest.js'
+import type { Session } from '../../../core/model/session/index.js'
+import { sessionDataMapper } from '../mappers/session.js'
+import type { SessionRepository } from '../../../core/repository/session/index.js'
 
 export interface SessionEntityIdentifier {
   refresh_token: string
@@ -22,9 +21,7 @@ export interface LoadedSessionEntity extends SessionEntity {
 @injectable()
 export class PostgresSessionRepository implements SessionRepository {
   public constructor(
-    @inject(PostgresPool) private readonly postgresPool: PostgresPool,
-    @inject(INFRASTRUCTURE_DATA_MAPPER.SESSION_DATA_MAPPER)
-    private readonly dataMapper: SessionDataMapper
+    @inject(PostgresPool) private readonly postgresPool: PostgresPool
   ) {}
 
   public async save(entity: SaveSessionRequest): Promise<Session> {
@@ -39,7 +36,7 @@ export class PostgresSessionRepository implements SessionRepository {
       [entity.refreshToken, entity.userId]
     )
 
-    return this.dataMapper.toDomain(result.rows[0])
+    return sessionDataMapper(result.rows[0])
   }
 
   public async updateByRefreshToken(refreshToken: string): Promise<Session> {
@@ -53,7 +50,7 @@ export class PostgresSessionRepository implements SessionRepository {
       [refreshToken]
     )
 
-    return this.dataMapper.toDomain(result.rows[0])
+    return sessionDataMapper(result.rows[0])
   }
 
   public async findByRefreshToken(
@@ -67,7 +64,7 @@ export class PostgresSessionRepository implements SessionRepository {
       [refreshToken]
     )
 
-    return result.rows[0] ? this.dataMapper.toDomain(result.rows[0]) : undefined
+    return sessionDataMapper(result.rows[0])
   }
 
   public async countByUser(userId: number): Promise<number> {

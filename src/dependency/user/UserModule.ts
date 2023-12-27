@@ -2,8 +2,8 @@ import { BaseModule } from '../common/BaseModule.js'
 import { CORE_REPOSITORY, CORE_SERVICE } from '../../core/CoreSymbols.js'
 import { INFRASTRUCTURE_DATA_MAPPER } from '../../infrastructure/InfrastructureSymbols.js'
 import { PostgresUserRepository } from '../../infrastructure/database/repository/UserRepository.js'
-import { UserDataMapper } from '../../infrastructure/database/mappers/UserMapper.js'
-import { UserService } from '../../core/service/User/UserService.js'
+import { UserDataMapper } from '../../infrastructure/database/mappers/user.js'
+import { UserService } from '../../core/service/user/index.js'
 
 export class UserModule extends BaseModule {
   protected getDeclarationDependencyMap(): [

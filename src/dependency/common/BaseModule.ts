@@ -1,5 +1,5 @@
 import { ContainerModule } from 'inversify'
-import { CoreError } from '../../core/common/errors/CoreError.js'
+import { CoreError } from '../../core/CoreError.js'
 
 export abstract class BaseModule extends ContainerModule {
   public constructor() {

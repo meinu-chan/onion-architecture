@@ -8,6 +8,6 @@ export class AppContainer extends Container {
       skipBaseClassChecks: true
     })
 
-    this.load(...modules.map((Module) => new Module()))
+    this.load(...modules)
   }
 }
