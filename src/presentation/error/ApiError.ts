@@ -1,4 +1,4 @@
-import { CoreError } from '../../../core/CoreError.js'
+import { CoreError } from '../../core/CoreError.js'
 import { STATUS_CODES } from 'node:http'
 
 export class ApiError extends Error {

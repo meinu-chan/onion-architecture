@@ -1,4 +1,4 @@
-import { config } from '../../../config/core.js'
+import { config } from '../../../config.js'
 import { createSigner, createVerifier } from 'fast-jwt'
 import type { JWTService } from './index.js'
 

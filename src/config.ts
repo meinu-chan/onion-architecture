@@ -1,37 +1,38 @@
 import { configDotenv } from 'dotenv'
-import type { CoreConfig } from './core/common/config.js'
 import { getIntegerFromEnv } from './util/getIntegerFromEnv.js'
 import { getRequiredValueFromEnv } from './util/getRequiredValueFromEnv.js'
 import type { PoolConfig } from 'pg'
 
 configDotenv()
 
-export interface InfrastructureConfig {
+interface Config {
+  app: {
+    transport: 'HTTP'
+    host: string
+  }
   database: {
     postgresPool: PoolConfig
   }
-}
-
-export interface PresentationConfig {
   session: {
     maxAge: number
   }
-}
-
-interface Config {
-  infrastructure: InfrastructureConfig
-  presentation: PresentationConfig
-  core: CoreConfig
+  jwt: {
+    secretToken: string
+    expiresInMs: number
+  }
 }
 
 export const config: Config = {
-  infrastructure: {
-    database: {
-      postgresPool: {}
-    }
+  app: {
+    transport: 'HTTP',
+    host: process.env.APP_HOST ?? '0.0.0.0'
   },
-  presentation: {
-    session: { maxAge: getIntegerFromEnv('SESSION_TOKEN_MAX_AGE', 10) }
+  database: {
+    postgresPool: {}
   },
-  core: {}
+  session: { maxAge: getIntegerFromEnv('SESSION_TOKEN_MAX_AGE') ?? 10 },
+  jwt: {
+    secretToken: getRequiredValueFromEnv('JWT_SECRET_TOKEN'),
+    expiresInMs: getIntegerFromEnv('JWT_EXPIRES_IN_MS') ?? 10 * 60 * 1000 // 10 minutes
+  }
 }

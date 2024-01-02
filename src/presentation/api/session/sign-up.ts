@@ -1,35 +1,10 @@
+import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
+import { inject, injectable } from 'inversify'
 import type { PasswordService } from '../../../core/service/password/index.js'
+import type { RequestPayload, RequestSchema, RouteHandler } from '../index.js'
 import type { SessionService } from '../../../core/service/session/index.js'
 import { Static, Type } from '@sinclair/typebox'
 import type { UserService } from '../../../core/service/user/index.js'
-
-// interface RequestSchema {
-//   body?: any
-//   response: any
-// }
-
-// interface RequestHandler {
-//   method: 'POST' | 'PUT' | 'GET' | 'DELETE' | 'PATCH'
-//   url: string
-//   schema: RequestSchema
-//   handler: any
-// }
-
-interface RequestDependency {
-  services: {
-    user: UserService
-    session: SessionService
-  }
-  util: {
-    password: PasswordService
-  }
-}
-
-interface RequestPayload {
-  body: Static<typeof requestBodySchema>
-}
-
-type Response = Static<typeof responseSchema>
 
 const requestBodySchema = Type.Object({
   email: Type.String({ format: 'email' }),
@@ -42,25 +17,46 @@ const responseSchema = Type.Object({
   accessToken: Type.String()
 })
 
-export const signUp = {
-  method: 'POST',
-  url: '/sign-up', // TODO: get name from file name
-  schema: { body: requestBodySchema, response: responseSchema },
-  handler: async (
-    deps: RequestDependency,
-    payload: RequestPayload
-  ): Promise<Response> => {
+type ApiResponse = Static<typeof responseSchema>
+
+@injectable()
+class SignUpRouteHandler
+  implements RouteHandler<{ Body: typeof requestBodySchema }, ApiResponse>
+{
+  public constructor(
+    @inject(CORE_SERVICE.PASSWORD_SERVICE)
+    private readonly password: PasswordService,
+
+    @inject(CORE_SERVICE.USER_SERVICE)
+    private readonly user: UserService,
+
+    @inject(CORE_SERVICE.SESSION_SERVICE)
+    private readonly session: SessionService
+  ) {}
+
+  public getSchema(): RequestSchema<{
+    Body: typeof requestBodySchema
+    Response: typeof responseSchema
+  }> {
+    return { body: requestBodySchema, response: responseSchema }
+  }
+
+  public async handle(
+    payload: RequestPayload<{ Body: typeof requestBodySchema }>
+  ): Promise<{ refreshToken: string; accessToken: string }> {
     const { password, ...body } = payload.body
 
-    const hashedPassword = await deps.util.password.hash(password)
+    const hashedPassword = await this.password.hash(password)
 
-    const user = await deps.services.user.save({
+    const user = await this.user.save({
       ...body,
       password: hashedPassword
     })
 
-    const session = await deps.services.session.create(user.id)
+    const session = await this.session.create(user.id)
 
     return session
   }
 }
+
+export default { handler: SignUpRouteHandler }
