@@ -8,7 +8,7 @@ export class ApiError extends Error {
 
   public constructor(
     message: string,
-    public statusCode: number = 500
+    private statusCode: number = 500
   ) {
     super(message)
   }
@@ -24,7 +24,7 @@ export class ApiError extends Error {
           return new ApiError(error.message, 404)
 
         default:
-          return new ApiError('Something went wrong', 500)
+          return new ApiError('Something went wrong.', 500)
       }
     }
 

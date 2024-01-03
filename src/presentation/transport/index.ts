@@ -1,6 +1,6 @@
 import { httpTransport } from './http.js'
 import type { interfaces } from 'inversify'
-import type { RouteHandler } from '../../presentation/api/index.js'
+import type { RouteHandler } from '../api/RouteHandler.js'
 
 export type Routing = {
   [name: string]: {

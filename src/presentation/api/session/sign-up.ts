@@ -1,10 +1,10 @@
 import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
 import { inject, injectable } from 'inversify'
 import type { PasswordService } from '../../../core/service/password/index.js'
-import { RequestPayload, RequestSchema, RouteHandler } from '../index.js'
 import type { SessionService } from '../../../core/service/session/index.js'
 import { Static, Type } from '@sinclair/typebox'
 import type { UserService } from '../../../core/service/user/index.js'
+import { RouteHandler, type RequestSchema } from '../RouteHandler.js'
 
 const requestBodySchema = Type.Object(
   {
@@ -23,12 +23,13 @@ const responseSchema = Type.Object(
   { additionalProperties: false }
 )
 
+type ApiRequest = Static<typeof requestBodySchema>
 type ApiResponse = Static<typeof responseSchema>
 
 @injectable()
-export default class SignUpRouteHandler extends RouteHandler<
-  { Body: typeof requestBodySchema },
-  ApiResponse
+export class SignUpRouteHandler extends RouteHandler<
+  typeof requestBodySchema,
+  typeof responseSchema
 > {
   public constructor(
     @inject(CORE_SERVICE.PASSWORD_SERVICE)
@@ -43,30 +44,18 @@ export default class SignUpRouteHandler extends RouteHandler<
     super()
   }
 
-  protected getSchema(): RequestSchema<{
-    Body: typeof requestBodySchema
-    Response: typeof responseSchema
-  }> {
-    return {
-      body: requestBodySchema,
-      response: responseSchema
-    }
+  protected getSchema(): RequestSchema {
+    return { payload: requestBodySchema, return: responseSchema }
   }
 
-  protected async handle(
-    payload: RequestPayload<{ Body: typeof requestBodySchema }>
-  ): Promise<{ refreshToken: string; accessToken: string }> {
-    const { password, ...body } = payload.body
-
+  protected async handle(payload: ApiRequest): Promise<ApiResponse> {
+    const { password, ...restUserData } = payload
     const hashedPassword = await this.password.hash(password)
-
     const user = await this.user.save({
-      ...body,
+      ...restUserData,
       password: hashedPassword
     })
-
     const session = await this.session.create(user.id)
-
     return session
   }
 }
