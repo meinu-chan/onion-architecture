@@ -1,28 +1,19 @@
-import fastify, { FastifyInstance } from 'fastify'
-import { dependencyContainerPlugin } from './presentation/plugin/dependencyContainerPlugin.js'
-import { errorHandler } from './presentation/plugin/util/error/errorHandler.js'
-import type { Server } from 'http'
-import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
-import { usersV1 } from './presentation/plugin/routes/session/sessionsV1.js'
+import { AppContainer } from './dependency/AppContainer.js'
+import { config } from './config.js'
+import { getIntegerFromEnv } from './util/getIntegerFromEnv.js'
+import { initApiRouting } from './presentation/api/index.js'
+import { Transport, transporters } from './lib/transport/index.js'
 
-export function getServer(): FastifyInstance<Server> {
-  const server = fastify<Server>({
-    logger: { level: 'info' },
-    ajv: {
-      customOptions: {
-        allErrors: true,
-        removeAdditional: true,
-        coerceTypes: false
-      }
-    }
-  })
+function getTransporter(): Transport {
+  const transportName = config.app.transport.toLocaleLowerCase()
+  const transport = transporters[transportName]
+  if (!transport) throw new Error(`Transport '${transportName}' doesn't exist.`)
+  return transport
+}
 
-  server.withTypeProvider<TypeBoxTypeProvider>()
-  server.setErrorHandler(errorHandler)
-
-  void server.register(dependencyContainerPlugin)
-
-  void server.register(usersV1, { prefix: '/v1' })
-
-  return server
+export async function startServer(): Promise<void> {
+  const transport = getTransporter()
+  const container = new AppContainer()
+  const routing = await initApiRouting(container)
+  await transport(routing, getIntegerFromEnv('HTTP_PORT') ?? 8000, container)
 }

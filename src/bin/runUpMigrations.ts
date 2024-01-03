@@ -3,15 +3,15 @@
 import 'reflect-metadata'
 import pg from 'pg'
 import Postgrator from 'postgrator'
-import { AppContainer } from '../dependecy/AppContainer.js'
+import { AppContainer } from '../dependency/AppContainer.js'
+import { config } from '../config.js'
 import { CORE_COMMON } from '../core/CoreSymbols.js'
-import { infrastructureConfig } from '../infrastructure/config.js'
 import type { Logger } from '../core/common/logger.js'
 
 import { join } from 'node:path'
 
 async function runUpMigrations(targetMigration: string) {
-  const dbConfig = infrastructureConfig.database.postgresPool
+  const dbConfig = config.database.postgresPool
   const logger = new AppContainer().get<Logger>(CORE_COMMON.LOGGER)
   const client = new pg.Client(dbConfig)
 

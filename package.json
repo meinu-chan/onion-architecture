@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
+  "main": "bin/apiServer.js",
   "scripts": {
     "build": "tsc",
     "build:clean": "rm *.tsbuildinfo && rm -rf dist/* && tsc",
