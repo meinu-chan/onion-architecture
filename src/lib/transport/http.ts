@@ -13,13 +13,9 @@ const HEADERS = {
 
 const NOT_FOUND = JSON.stringify({ status: 'not found' })
 
-// TODO: Add error handling
-// TODO: Add serialization of request and responses
-
 export const httpTransport: Transport<Server> = (routing, port, container) => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const server = createServer(async (req, res) => {
-    void res.writeHead(200, HEADERS)
     if (req.method !== 'POST' || !req.url) return void res.end(NOT_FOUND)
     const { url, socket } = req
     const query = receiveQuery(url)
@@ -31,7 +27,8 @@ export const httpTransport: Transport<Server> = (routing, port, container) => {
     if (!handlerName) return void res.end(NOT_FOUND)
     const body = await receiveBody(req)
     const handler = container.get<RouteHandler>(handlerName)
-    const response = await handler.handle({ body, query })
+    const response = await handler.proceedRequest({ body, query })
+    void res.writeHead(response.code ?? 200, HEADERS)
     console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
     void res.end(JSON.stringify(response))
   })
