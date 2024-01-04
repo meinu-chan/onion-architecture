@@ -1,4 +1,4 @@
-import { httpTransport } from './http.js'
+import { httpTransport } from './http/index.js'
 import type { interfaces } from 'inversify'
 import type { RouteHandler } from '../../api/RouteHandler.js'
 

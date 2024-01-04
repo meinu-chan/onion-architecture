@@ -1,6 +1,6 @@
-import { config } from '../../config.js'
-import type { RouteHandler } from '../../api/RouteHandler.js'
-import type { Transport } from './index.js'
+import { config } from '../../../config.js'
+import type { RouteHandler } from '../../RouteHandler.js'
+import type { Transport } from '../index.js'
 import querystring from 'node:querystring'
 import { type IncomingMessage, createServer, Server } from 'node:http'
 
@@ -11,25 +11,25 @@ const HEADERS = {
   'Access-Control-Allow-Headers': 'Content-Type'
 }
 
-const NOT_FOUND = JSON.stringify({ status: 'not found' })
+const NOT_FOUND = JSON.stringify({ status: 'Not Found' })
 
 export const httpTransport: Transport<Server> = (routing, port, container) => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const server = createServer(async (req, res) => {
     if (req.method !== 'POST' || !req.url) return void res.end(NOT_FOUND)
     const { url, socket } = req
-    const query = receiveQuery(url)
+    console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
     const [place, name, method] = url.substring(1).split('/')
     if (place !== 'api') return void res.end(NOT_FOUND)
     const entity = routing[name]
     if (!entity) return void res.end(NOT_FOUND)
     const handlerName = entity[method]
     if (!handlerName) return void res.end(NOT_FOUND)
+    const query = receiveQuery(url)
     const body = await receiveBody(req)
     const handler = container.get<RouteHandler>(handlerName)
-    const response = await handler.proceedRequest({ body, query })
+    const response = await handler.proceedRequest({ ...body, ...query })
     void res.writeHead(200, HEADERS)
-    console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
     void res.end(JSON.stringify(response))
   })
 

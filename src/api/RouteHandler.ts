@@ -1,4 +1,4 @@
-import { ApiError } from './error/ApiError.js'
+import { AppError } from '../app/error.js'
 import type { ErrorResponse } from './error.js'
 import type { Static, TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
@@ -36,23 +36,25 @@ export abstract class RouteHandler<
     try {
       const response = await this.handle(payload)
       return this.serialize(response)
-    } catch (error) {
-      return {
-        type: 'caught_error',
-        error: ApiError.from(error)
+    } catch (error: unknown) {
+      if (error instanceof AppError) {
+        return { type: error.type, error: error.message }
       }
+      return { type: 'unexpected_error', error: 'Server Internal' }
     }
   }
 
   public validate(incomingData: unknown): ValueError | undefined {
-    const errorIterator = Value.Errors(this.getSchema().payload, incomingData)
+    const { payload: schema } = this.getSchema()
+    const errorIterator = Value.Errors(schema, incomingData)
     return errorIterator.First()
   }
 
   public serialize<Schema extends TSchema>(
     incomingData: unknown
   ): Static<Schema> {
-    return Value.Cast(this.getSchema().return, incomingData)
+    const { return: schema } = this.getSchema()
+    return Value.Cast(schema, incomingData)
   }
 
   protected abstract handle(payload: Static<TPayload>): Promise<Static<TReturn>>

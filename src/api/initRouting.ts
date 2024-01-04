@@ -1,7 +1,7 @@
 import { importDirectory } from '../lib/loader.js'
 import type { interfaces } from 'inversify'
 import type { RouteHandler } from './RouteHandler.js'
-import type { Routing } from '../lib/transport/index.js'
+import type { Routing } from './transport/index.js'
 import { set } from '../lib/util/set.js'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
