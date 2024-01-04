@@ -39,7 +39,8 @@ export class PostgresUserRepository implements UserRepository {
     return userDataMapper(result.rows[0])
   }
 
-  public async getByUniqueValue(
+  // TODO: add filter builder
+  public async getOne(
     identifier: UserEntityIdentifier
   ): Promise<User | undefined> {
     const result = await this.postgresPool.query<LoadedUserEntity>(

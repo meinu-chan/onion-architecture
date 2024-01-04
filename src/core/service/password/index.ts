@@ -1,4 +1,4 @@
 export interface PasswordService {
-  hash(deserialized: string): Promise<string>
-  compare(deserialized: string, serialized: string): Promise<boolean>
+  hash(rawPassword: string): Promise<string>
+  compare(rawPassword: string, hashed: string): Promise<boolean>
 }

@@ -1,5 +1,5 @@
 import { config } from '../../config.js'
-import type { RouteHandler } from '../../presentation/api/index.js'
+import type { RouteHandler } from '../../api/RouteHandler.js'
 import type { Transport } from './index.js'
 import querystring from 'node:querystring'
 import { type IncomingMessage, createServer, Server } from 'node:http'
@@ -28,7 +28,7 @@ export const httpTransport: Transport<Server> = (routing, port, container) => {
     const body = await receiveBody(req)
     const handler = container.get<RouteHandler>(handlerName)
     const response = await handler.proceedRequest({ body, query })
-    void res.writeHead(response.code ?? 200, HEADERS)
+    void res.writeHead(200, HEADERS)
     console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
     void res.end(JSON.stringify(response))
   })

@@ -1,8 +1,8 @@
 import { AppContainer } from './dependency/AppContainer.js'
 import { config } from './config.js'
-import { getIntegerFromEnv } from './util/getIntegerFromEnv.js'
-import { initApiRouting } from './presentation/api/initRouting.js'
-import { Transport, transporters } from './presentation/transport/index.js'
+import { getIntegerFromEnv } from './lib/util/getIntegerFromEnv.js'
+import { initApiRouting } from './api/initRouting.js'
+import { transporters, type Transport } from './lib/transport/index.js'
 
 function getTransporter(): Transport {
   const transportName = config.app.transport.toLocaleLowerCase()
@@ -14,6 +14,6 @@ function getTransporter(): Transport {
 export async function startServer(): Promise<void> {
   const transport = getTransporter()
   const container = new AppContainer()
-  const routing = initApiRouting(container)
+  const routing = await initApiRouting(container)
   await transport(routing, getIntegerFromEnv('HTTP_PORT') ?? 8000, container)
 }
