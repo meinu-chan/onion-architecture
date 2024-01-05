@@ -1,6 +1,6 @@
 import { configDotenv } from 'dotenv'
-import { getIntegerFromEnv } from './util/getIntegerFromEnv.js'
-import { getRequiredValueFromEnv } from './util/getRequiredValueFromEnv.js'
+import { getIntegerFromEnv } from './lib/util/getIntegerFromEnv.js'
+import { getRequiredValueFromEnv } from './lib/util/getRequiredValueFromEnv.js'
 import type { PoolConfig } from 'pg'
 
 configDotenv()

@@ -1,8 +1,8 @@
 import { AppContainer } from './dependency/AppContainer.js'
 import { config } from './config.js'
-import { getIntegerFromEnv } from './util/getIntegerFromEnv.js'
-import { initApiRouting } from './presentation/api/index.js'
-import { Transport, transporters } from './lib/transport/index.js'
+import { getIntegerFromEnv } from './lib/util/getIntegerFromEnv.js'
+import { initApiRouting } from './api/initRouting.js'
+import { transporters, type Transport } from './api/transport/index.js'
 
 function getTransporter(): Transport {
   const transportName = config.app.transport.toLocaleLowerCase()

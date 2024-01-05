@@ -1,5 +1,6 @@
 import { ContainerModule } from 'inversify'
-import { CoreError } from '../../core/CoreError.js'
+
+export type DependencyDeclaration = [symbol, new (...args: any[]) => any]
 
 export abstract class BaseModule extends ContainerModule {
   public constructor() {
@@ -12,7 +13,7 @@ export abstract class BaseModule extends ContainerModule {
         const Declaration = declarationDependencyMap.get(declarationSymbol)
 
         if (!Declaration) {
-          throw new CoreError(
+          throw new Error(
             `Missing declaration for the '${String(declarationSymbol)}' token.`
           )
         }
@@ -22,8 +23,5 @@ export abstract class BaseModule extends ContainerModule {
     })
   }
 
-  protected abstract getDeclarationDependencyMap(): [
-    symbol,
-    new (...args: any[]) => any
-  ][]
+  protected abstract getDeclarationDependencyMap(): DependencyDeclaration[]
 }
