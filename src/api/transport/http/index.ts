@@ -16,6 +16,7 @@ const NOT_FOUND = JSON.stringify({ status: 'Not Found' })
 export const httpTransport: Transport<Server> = (routing, port, container) => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const server = createServer(async (req, res) => {
+    void res.writeHead(200, HEADERS)
     if (req.method !== 'POST' || !req.url) return void res.end(NOT_FOUND)
     const { url, socket } = req
     console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
@@ -29,7 +30,6 @@ export const httpTransport: Transport<Server> = (routing, port, container) => {
     const body = await receiveBody(req)
     const handler = container.get<RouteHandler>(handlerName)
     const response = await handler.proceedRequest({ ...body, ...query })
-    void res.writeHead(200, HEADERS)
     void res.end(JSON.stringify(response))
   })
 

@@ -1,5 +1,6 @@
 import { AppError } from '../app/error.js'
 import type { ErrorResponse } from './error.js'
+import type { Logger } from '../core/common/logger.js'
 import type { Static, TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
 import type { ValueError } from '@sinclair/typebox/errors'
@@ -18,6 +19,8 @@ export abstract class RouteHandler<
   TPayload extends TSchema = TSchema,
   TReturn extends TSchema = TSchema
 > {
+  public constructor(private readonly logger: Logger) {}
+
   public async proceedRequest(
     payload: Static<TPayload>
   ): Promise<Static<TReturn> | ErrorResponse> {
@@ -36,11 +39,18 @@ export abstract class RouteHandler<
     try {
       const response = await this.handle(payload)
       return this.serialize(response)
-    } catch (error: unknown) {
-      if (error instanceof AppError) {
-        return { type: error.type, error: error.message }
+    } catch (error: any) {
+      let parsedError = {
+        type: 'unexpected_error',
+        error: error.message ?? 'Something went wrong.'
       }
-      return { type: 'unexpected_error', error: 'Server Internal' }
+
+      if (error instanceof AppError) {
+        parsedError = { type: error.type, error: error.message }
+      }
+
+      this.logger.error(`'${parsedError.type}': ${parsedError.error}`)
+      return parsedError
     }
   }
 

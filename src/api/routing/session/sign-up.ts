@@ -1,7 +1,8 @@
 import { APP_SERVICE } from '../../../app/AppSymbols.js'
-import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
+import { CORE_COMMON, CORE_SERVICE } from '../../../core/CoreSymbols.js'
 import { inject, injectable } from 'inversify'
 import type { JWTService } from '../../../core/service/jwt/index.js'
+import type { Logger } from '../../../core/common/logger.js'
 import type { PasswordService } from '../../../core/service/password/index.js'
 import type { SessionService } from '../../../app/session/index.js'
 import { Static, Type } from '@sinclair/typebox'
@@ -44,9 +45,12 @@ export default class SignUpRouteHandler extends RouteHandler<
     private readonly session: SessionService,
 
     @inject(CORE_SERVICE.JWT_SERVICE)
-    private readonly jwt: JWTService
+    private readonly jwt: JWTService,
+
+    @inject(CORE_COMMON.LOGGER)
+    logger: Logger
   ) {
-    super()
+    super(logger)
   }
 
   protected getSchema(): RequestSchema {
