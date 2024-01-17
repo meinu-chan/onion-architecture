@@ -18,4 +18,8 @@ export class SessionService {
     const refreshToken = await this.jwt.createRefreshToken()
     return this.session.save({ refreshToken, userId })
   }
+
+  public async remove(refreshToken: string): Promise<void> {
+    await this.session.removeByRefreshToken(refreshToken)
+  }
 }

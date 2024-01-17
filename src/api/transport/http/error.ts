@@ -12,14 +12,16 @@ type HttpError = {
 }
 
 const errorTypesToCodeMap: Record<ApiError, number> = {
-  validation_error: 400,
   duplicate: 400,
-  unexpected_error: 500
+  token_expired: 403,
+  unauthorized: 401,
+  unexpected_error: 500,
+  validation_error: 400
 }
 
 export function httpErrorHandler(error: unknown): HttpError {
   if (isHandledError(error)) {
-    const errorCode = errorTypesToCodeMap[error.type]
+    const errorCode = errorTypesToCodeMap[error.error_type] ?? 500
     const errorStatus = STATUS_CODES[errorCode] ?? 'Internal Server Error'
     return { code: errorCode, status: errorStatus, error: error.error }
   }
@@ -32,8 +34,8 @@ export function httpErrorHandler(error: unknown): HttpError {
 }
 
 function isHandledError(error: unknown): error is ErrorResponse {
-  if (typeof error === 'object' && error !== null && 'type' in error) {
-    return apiErrorTypes.some((apiError) => apiError === error.type)
+  if (typeof error === 'object' && error !== null && 'error_type' in error) {
+    return apiErrorTypes.some((apiError) => apiError === error.error_type)
   }
 
   return false

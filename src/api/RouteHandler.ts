@@ -1,7 +1,6 @@
 import { AppError } from '../app/error.js'
 import type { ErrorResponse } from './error.js'
-import type { Logger } from '../core/common/logger.js'
-import type { Static, TSchema } from '@sinclair/typebox'
+import type { Static, TAny, TSchema } from '@sinclair/typebox'
 import { Value } from '@sinclair/typebox/value'
 import type { ValueError } from '@sinclair/typebox/errors'
 
@@ -15,42 +14,49 @@ export interface RequestSchema<TData extends BaseSchema = BaseSchema> {
   readonly return: TData['Return']
 }
 
-export abstract class RouteHandler<
-  TPayload extends TSchema = TSchema,
-  TReturn extends TSchema = TSchema
-> {
-  public constructor(private readonly logger: Logger) {}
+export interface RequestUtil {
+  saveRefreshToken: (refreshToken: string) => Promise<void>
+  getAccessToken: () => Promise<string>
+  getRefreshToken: () => Promise<string>
+  getUser: () => Promise<{ id: number }>
+}
 
+export abstract class RouteHandler<
+  TPayload extends TSchema = TAny,
+  TReturn extends TSchema = TAny
+> {
   public async proceedRequest(
-    payload: Static<TPayload>
+    payload: Static<TPayload>,
+    util: RequestUtil
   ): Promise<Static<TReturn> | ErrorResponse> {
-    const validationResult = this.validate(payload)
-    if (validationResult) {
-      return {
-        type: 'validation_error',
-        error: {
-          path: validationResult.path,
-          message: validationResult.message,
-          value: validationResult.value
+    try {
+      await this.checkAuth(util)
+
+      const validationResult = this.validate(payload)
+      if (validationResult) {
+        return {
+          error_type: 'validation_error',
+          error: {
+            path: validationResult.path,
+            message: validationResult.message,
+            value: validationResult.value
+          }
         }
       }
-    }
 
-    try {
-      const response = await this.handle(payload)
+      const response = await this.handle(payload, util)
       return this.serialize(response)
     } catch (error: any) {
-      let parsedError = {
-        type: 'unexpected_error',
+      if (error instanceof AppError) {
+        return {
+          error_type: error.type,
+          error: error.message
+        }
+      }
+      return {
+        error_type: 'unexpected_error',
         error: error.message ?? 'Something went wrong.'
       }
-
-      if (error instanceof AppError) {
-        parsedError = { type: error.type, error: error.message }
-      }
-
-      this.logger.error(`'${parsedError.type}': ${parsedError.error}`)
-      return parsedError
     }
   }
 
@@ -67,6 +73,13 @@ export abstract class RouteHandler<
     return Value.Cast(schema, incomingData)
   }
 
-  protected abstract handle(payload: Static<TPayload>): Promise<Static<TReturn>>
+  protected async checkAuth(_util: RequestUtil): Promise<void> {
+    // Nothing to do
+  }
+
+  protected abstract handle(
+    payload: Static<TPayload>,
+    util: RequestUtil
+  ): Promise<Static<TReturn>>
   protected abstract getSchema(): RequestSchema
 }

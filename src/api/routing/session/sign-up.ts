@@ -1,13 +1,16 @@
 import { APP_SERVICE } from '../../../app/AppSymbols.js'
-import { CORE_COMMON, CORE_SERVICE } from '../../../core/CoreSymbols.js'
+import { CORE_SERVICE } from '../../../core/CoreSymbols.js'
 import { inject, injectable } from 'inversify'
 import type { JWTService } from '../../../core/service/jwt/index.js'
-import type { Logger } from '../../../core/common/logger.js'
 import type { PasswordService } from '../../../core/service/password/index.js'
 import type { SessionService } from '../../../app/session/index.js'
 import { Static, Type } from '@sinclair/typebox'
 import type { UserService } from '../../../app/user/index.js'
-import { RouteHandler, type RequestSchema } from '../../RouteHandler.js'
+import {
+  RouteHandler,
+  type RequestSchema,
+  RequestUtil
+} from '../../RouteHandler.js'
 
 const requestBodySchema = Type.Object(
   {
@@ -45,24 +48,25 @@ export default class SignUpRouteHandler extends RouteHandler<
     private readonly session: SessionService,
 
     @inject(CORE_SERVICE.JWT_SERVICE)
-    private readonly jwt: JWTService,
-
-    @inject(CORE_COMMON.LOGGER)
-    logger: Logger
+    private readonly jwt: JWTService
   ) {
-    super(logger)
+    super()
   }
 
   protected getSchema(): RequestSchema {
     return { payload: requestBodySchema, return: responseSchema }
   }
 
-  protected async handle(payload: ApiRequest): Promise<ApiResponse> {
+  protected async handle(
+    payload: ApiRequest,
+    util: RequestUtil
+  ): Promise<ApiResponse> {
     const { password: rawPassword, ...restUserData } = payload
     const password = await this.password.hash(rawPassword)
     const user = await this.user.save({ ...restUserData, password })
     const { refreshToken } = await this.session.create(user.id)
     const accessToken = await this.jwt.createAccessToken(user.id)
+    await util.saveRefreshToken(refreshToken)
     return { accessToken, refreshToken }
   }
 }
