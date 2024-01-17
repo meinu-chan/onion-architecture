@@ -1,6 +1,10 @@
 export type AppErrorType = (typeof appErrorTypes)[number]
 
-export const appErrorTypes = ['duplicate'] as const
+export const appErrorTypes = [
+  'duplicate',
+  'unauthorized',
+  'token_expired'
+] as const
 
 export class AppError extends Error {
   public readonly type: AppErrorType

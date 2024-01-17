@@ -1,8 +1,10 @@
 import { config } from '../../../config.js'
+import { getAccessToken, getRefreshToken, getUser, saveRefreshToken } from './util/access.js'
+import { httpErrorHandler } from './error.js'
+import { receiveBody, receiveQuery } from './util/receive.js'
 import type { RouteHandler } from '../../RouteHandler.js'
 import type { Transport } from '../index.js'
-import querystring from 'node:querystring'
-import { type IncomingMessage, createServer, Server } from 'node:http'
+import { createServer, Server, ServerResponse } from 'node:http'
 
 const HEADERS = {
   'Content-Type': 'application/json; charset=UTF-8',
@@ -13,24 +15,45 @@ const HEADERS = {
 
 const NOT_FOUND = JSON.stringify({ status: 'Not Found' })
 
+const endResponse = (res: ServerResponse, status: number, payload: unknown) => {
+  res.writeHead(status, HEADERS)
+  res.end(JSON.stringify(payload))
+}
+
 export const httpTransport: Transport<Server> = (routing, port, container) => {
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   const server = createServer(async (req, res) => {
-    void res.writeHead(200, HEADERS)
-    if (req.method !== 'POST' || !req.url) return void res.end(NOT_FOUND)
+    if (req.method !== 'POST' || !req.url) {
+      return endResponse(res, 404, NOT_FOUND)
+    }
     const { url, socket } = req
     console.log(`${socket.remoteAddress}\t ${req.method} ${url}`)
     const [place, name, method] = url.substring(1).split('/')
-    if (place !== 'api') return void res.end(NOT_FOUND)
+    if (place !== 'api') return endResponse(res, 404, NOT_FOUND)
     const entity = routing[name]
     if (!entity) return void res.end(NOT_FOUND)
-    const handlerName = entity[method]
-    if (!handlerName) return void res.end(NOT_FOUND)
+    const handlerIdentifier = entity[method]
+    if (!handlerIdentifier) return void res.end(NOT_FOUND)
     const query = receiveQuery(url)
     const body = await receiveBody(req)
-    const handler = container.get<RouteHandler>(handlerName)
-    const response = await handler.proceedRequest({ ...body, ...query })
-    void res.end(JSON.stringify(response))
+    const handler = container.get<RouteHandler>(handlerIdentifier)
+    const response = await handler.proceedRequest(
+      { ...body, ...query },
+      {
+        saveRefreshToken: saveRefreshToken(req, res, container),
+        getAccessToken: getAccessToken(req, res, container),
+        getRefreshToken: getRefreshToken(req, res, container),
+        getUser: getUser(req, res, container)
+      }
+    )
+    if ('error_type' in response) {
+      const errorResponse = httpErrorHandler(response)
+      return endResponse(res, errorResponse.code, {
+        status: errorResponse.status,
+        error: errorResponse.error
+      })
+    }
+    return endResponse(res, 200, response)
   })
 
   server.listen(port, config.app.host, () => {
@@ -38,19 +61,4 @@ export const httpTransport: Transport<Server> = (routing, port, container) => {
   })
 
   return server
-}
-
-async function receiveBody(req: IncomingMessage): Promise<any> {
-  const buffers = []
-  for await (const chunk of req) buffers.push(chunk)
-  const data = Buffer.concat(buffers).toString()
-
-  return JSON.parse(data)
-}
-
-function receiveQuery(pathname: string): any {
-  const queryIndex = pathname.indexOf('?')
-  if (queryIndex < 0) return undefined
-  const query = pathname.slice(queryIndex + 1)
-  return querystring.parse(query)
 }

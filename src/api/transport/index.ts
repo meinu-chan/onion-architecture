@@ -1,5 +1,5 @@
+import type { AppContainer } from '../../dependency/AppContainer.js'
 import { httpTransport } from './http/index.js'
-import type { interfaces } from 'inversify'
 import type { RouteHandler } from '../../api/RouteHandler.js'
 
 export type Routing = {
@@ -11,7 +11,7 @@ export type Routing = {
 export type Transport<TServer = unknown> = (
   routing: Routing,
   port: number,
-  container: interfaces.Container
+  container: AppContainer
 ) => Promise<TServer> | TServer
 
 export const transporters: Record<string, Transport> = {

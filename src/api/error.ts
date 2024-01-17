@@ -12,7 +12,7 @@ interface GenericErrorResponse<
   TType extends ApiError = ApiError,
   TError = any
 > {
-  type: TType
+  error_type: TType
   error: TError
 }
 
